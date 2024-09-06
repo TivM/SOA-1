@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: Passport Control - OpenAPI 3.0
+  description: |-
+  version: 0.0.1
+servers: 
+  - url: http://localhost:8080/api/v1
+    description: Dev server  
+paths:
+  /persons/{person_id}:
+    get:
+      summary: Получение человека по идентификатору
+      tags: 
+        - Persons
+      operationId: getPersonById
+      parameters:
+        - name: person_id
+          description: Идентификатор человека
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ с данными о человеке
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+    delete:
+      summary: Удаление человека по идентификатору
+      tags: 
+        - Persons
+      operationId: deletePersonById
+      parameters:
+        - name: person_id
+          description: Идентификатор человека
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json: {}
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+    put:
+      summary: Обновление данных о человеке по идентификатору
+      tags: 
+        - Persons
+      operationId: updatePersonById
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+      parameters:
+        - name: person_id
+          description: Идентификатор человека
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ с данными об обновлённом человеке
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        '400':
+           description: Ошибка. Данные введены некорректно
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 400
+                  message:
+                    type: string
+                    example: Координата y не может быть меньше -178
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+  /persons:
+    post:
+      summary: Создание нового человека
+      tags: 
+        - Persons
+      operationId: createPerson
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+      responses:
+        '200':
+          description: Успешный ответ с данными о созданном человеке
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        '400':
+           description: Ошибка. Данные введены некорректно
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 400
+                  message:
+                    type: string
+                    example: Координата y не может быть меньше -178
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+    get:
+      summary: Получение массива людей
+      tags:
+        - Persons
+      operationId: getPersons
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы (начиная с 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+        - name: size
+          in: query
+          description: Размер страницы (количество элементов на одной странице)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            example: 10
+        - name: id
+          in: query
+          description: Идентификатор человека
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+        - name: name
+          in: query
+          description: Имя человека
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            example: John
+        - name: coordinate.x
+          in: query
+          description: Координата х
+          required: false
+          schema:
+            type: number
+            format: float
+            example: 1.0
+        - name: coordinate.y
+          in: query
+          description: Координата y
+          required: false
+          schema:
+            type: integer
+            minimum: -177
+            example: 1
+        - name: location.x
+          in: query
+          description: Координата локации х
+          required: false
+          schema:
+            type: number
+            format: float
+            nullable: false
+            example: 1
+        - name: location.y
+          in: query
+          description: Координата локации y
+          required: false
+          schema:
+            type: integer
+            minimum: -177
+            example: 1
+        - name: location.name
+          in: query
+          description: Координата локации y
+          required: false
+          schema:
+            type: string
+            nullable: true
+            example: Moscow
+        - name: color
+          in: query
+          description: Цвет волос
+          required: false
+          schema:
+            type: string
+            enum:
+              - RED
+              - BLACK
+              - BLUE
+              - ORANGE
+            example: RED
+        - name: creationDate
+          in: query
+          description: Дата создания
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: 2024-09-05T13:09:53.216Z
+        - name: height
+          in: query
+          description: Рост
+          required: false
+          schema:
+            type: number
+            format: double
+            minimum: 0.01
+            example: 1.0
+        - name: birthday
+          in: query
+          description: Дата рождения
+          required: false
+          schema:
+            type: string
+            format: date-time
+            nullable: true
+            example: 2024-09-05T13:09:53.216Z
+        - name: passportID
+          in: query
+          description: Идентификатор паспорта ('+' в конце строки вытаскивает значения больше заданного, соответственно '-' - меньше заданного)
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            example: 1+
+           
+      responses:
+        '200':
+          description: Успешный ответ с массивом людей
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Person"
+                  total:
+                    type: integer
+                    description: Общее количество элементов
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                  currentPage:
+                    type: integer
+                    description: Текущий номер страницы
+                  size:
+                    type: integer
+                    description: Размер страницы
+        '400':
+          description: Ошибка. Неправильные параметры фильтрации или сортировки
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 400
+                  message:
+                    type: string
+                    example: Неправильные параметры
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+  /persons/height-average:
+    get:
+      summary: Получение данных о среднем росте людей
+      tags: 
+        - Persons
+      operationId: getPersonsHeightAverage
+      responses:
+        '200':
+          description: Успешный ответ с данными о среднем росте людей
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  average:
+                    type: number
+                    format: float
+                    example: 1.7
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+components:
+  schemas:
+    Coordinates:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+        y:
+          type: integer
+          minimum: -177
+      required:
+        - x
+        - y
+        
+    Location:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+          nullable: false
+        y:
+          type: integer
+        name:
+          type: string
+          nullable: true
+      required:
+        - x
+        - y
+
+    Color:
+      type: string
+      enum:
+        - RED
+        - BLACK
+        - BLUE
+        - ORANGE
+    Nationality:
+      type: string
+      enum:
+        - RUSSIAN
+        - ENGLISH
+        - BRAZILIAN
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          uniqueItems: true
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          minLength: 1
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        height:
+          type: number
+          format: double
+          minimum: 0.01
+        birthday:
+          type: string
+          format: date-time
+          nullable: true
+        passportID:
+          type: string
+          minLength: 1
+          uniqueItems: true
+        hairColor:
+          $ref: '#/components/schemas/Color'
+        location:
+          $ref: '#/components/schemas/Location'
+          nullable: true
+      required:
+        - id
+        - name
+        - coordinates
+        - creationDate
+        - height
+        - passportID
+        - hairColor

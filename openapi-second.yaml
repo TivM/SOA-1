@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Passport Control - OpenAPI 3.0
+  description: |-
+  version: 0.0.1
+servers: 
+  - url: http://localhost:8080/api/v1
+    description: Dev server  
+paths:
+  /eye-color/{eye-color}:
+    get:
+      summary: Получение количество людей по цвету глаз
+      tags: 
+        - Persons characteristics
+      operationId: getPersonsByEyeСolor
+      parameters:
+        - name: eye-color
+          description: Цвет глаз
+          in: path
+          required: true
+          schema:
+            $ref: './openapi-first.yaml#/components/schemas/Color'
+      responses:
+        '200':
+          description: Успешный ответ с количеством человек
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    format: integer
+                    example: 170
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+
+
+  /nationality/{nationality}/hair-color/{hair-color}/percentage/{hair-color}:
+    get:
+      summary: Получение процента людей по цвету волос и национальности
+      tags: 
+        - Persons characteristics
+      operationId: getPersonsPercentageByEyeСolorAndNationality
+      parameters:
+        - name: hair-color
+          description: Цвет волос
+          in: path
+          required: true
+          schema:
+            $ref: './openapi-first.yaml#/components/schemas/Color'
+        - name: nationality
+          description: Национальность
+          in: path
+          required: true
+          schema:
+            $ref: './openapi-first.yaml#/components/schemas/Nationality'
+      responses:
+        '200':
+          description: Успешный ответ с процентом человек
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  percentage:
+                    type: number
+                    format: float
+                    example: 1.7
+        '404':
+           description: Ошибка. Данный ресурс не найден
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 404
+                  message:
+                    type: string
+                    example: Ресурс не найден
+                  time:
+                    type: string
+                    format: date-time
+                    example: 2024-09-05T11:00:01.637Z
+
+
+  
+components:
+  schemas:
+    Coordinates:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+        y:
+          type: integer
+          minimum: -177
+      required:
+        - x
+        - y
+        
+    Location:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+          nullable: false
+        y:
+          type: integer
+        name:
+          type: string
+          nullable: true
+      required:
+        - x
+        - y
+
+    Color:
+      type: string
+      enum:
+        - RED
+        - BLACK
+        - BLUE
+        - ORANGE
+    Nationality:
+      type: string
+      enum:
+        - RUSSIAN
+        - ENGLISH
+        - BRAZILIAN
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          uniqueItems: true
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          minLength: 1
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        height:
+          type: number
+          format: double
+          minimum: 0.01
+        birthday:
+          type: string
+          format: date-time
+          nullable: true
+        passportID:
+          type: string
+          minLength: 1
+          uniqueItems: true
+        hairColor:
+          $ref: '#/components/schemas/Color'
+        location:
+          $ref: '#/components/schemas/Location'
+          nullable: true
+      required:
+        - id
+        - name
+        - coordinates
+        - creationDate
+        - height
+        - passportID
+        - hairColor
